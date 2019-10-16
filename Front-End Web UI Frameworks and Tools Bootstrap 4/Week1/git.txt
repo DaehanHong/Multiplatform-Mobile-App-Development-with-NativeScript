@@ -1,0 +1,63 @@
+git status
+
+git add .
+
+git status
+
+git commit -m "message here"
+
+git log --oneline
+------------------------------------------------
+to go back to privous commit files
+
+git checkout 'number' filename.html
+(git checkout 900cfcf index.html)
+
+
+to add github origin:
+git remote add origin https://github.com/DaehanHong/git-test.git
+
+to push files:
+git push -u origin master
+
+--------------------------------------------------
+to create new folder:
+mkdir temp
+
+
+to clone it:
+git clone https://github.com/DaehanHong/git-test.git
+
+---------------------------------------------------
+npm init
+
+npm install lite-server --save-dev
+
+open git-test folder with Visual Studio Code
+and open package.json,
+and in the scripts parts, add two lines:
+"start":"npm run lite",
+"lite": "lite-server"
+
+and then, to run in cmd:
+npm start
+
+---------------------------------------------------
+In new files/folders:
+npm install
+
+git init
+
+git status
+
+git add .
+
+git commit -m "Initial Setup"
+
+npm install bootstrap@4.0.0 --save
+
+npm install jquery@3.3.1 popper.js@1.12.9 --save
+
+
+
+

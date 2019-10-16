@@ -1,0 +1,429 @@
+1. less
+
+npm install -g less@2.7.2
+
+and then, go to css folder:
+cd css
+
+and to change less file to css file:
+lessc styles.less styles.css
+-------------------------------------------------------
+
+2. sass
+
+npm install --save-dev node-sass
+
+and then to run:
+npm run scss
+
+--------------------------------------------------------
+npm install --save-dev onchange@3.3.0 parallelshell@3.0.2
+
+add in package.json:
+"watch:scss": "onchange 'css/*.scss' -- npm run scss",
+"watch:all": "parallelshell 'npm run watch:scss' 'npm run lite'"
+or
+"watch:scss": "onchange \"css/*.scss\" -- npm run scss",
+"watch:all": "parallelshell \"npm run watch:scss\" \"npm run lite\""
+
+udate on start:
+"start": "npm run watch:all",
+
+and then, check:
+npm start
+--------------------------------------------------------
+npm install --save-dev rimraf@2.6.2
+
+add in package.json:
+"clean": "rimraf dist",
+
+npm -g install copyfiles@2.0.0
+
+add in package.json:
+"copyfonts": "copyfiles -f node_modules/font-awesome/fonts/* dist/fonts",
+
+npm -g install imagemin-cli@3.0.0
+
+sudo npm install -g imagemin-cli@3.0.0 --unsafe-perm=true --allow-root
+
+add in package.json:
+"imagemin": "imagemin img/* --out-dir=\"dist/img\"",
+
+
+add in gitignore:
+dist
+
+npm install --save-dev usemin-cli@0.5.1 cssmin@0.4.3 uglifyjs@2.4.11 htmlmin@0.0.7
+
+add in package.json:
+    "usemin": "usemin contactus.html -d dist --htmlmin -o dist/contactus.html && usemin aboutus.html -d dist --htmlmin -o dist/aboutus.html && usemin index.html -d dist --htmlmin -o dist/index.html",
+    "build": "npm run clean && npm run imagemin && npm run copyfonts && npm run usemin"
+
+<!-- build:css css/main.css -->
+add between link css tag
+<!-- endbuild -->
+
+<!-- build:js js/main.js -->
+add between javascript tag
+<!-- endbuild -->
+
+npm run build
+
+-----------------------------------------------------------
+npm install -g grunt-cli@1.2.0
+
+npm install grunt@1.0.2 --save-dev
+
+create Gruntfile.js and add it:
+'use strict';
+
+module.exports = function (grunt) {
+  // Define the configuration for all the tasks
+  grunt.initConfig({
+
+  });
+};
+
+npm install grunt-sass@2.1.0 --save-dev
+npm install time-grunt@1.4.0 --save-dev
+npm install jit-grunt@0.10.0 --save-dev
+
+add it in Gruntfile.js:
+'use strict';
+
+module.exports = function (grunt) {
+    // Time how long tasks take. Can help when optimizing build times
+    require('time-grunt')(grunt);
+
+    // Automatically load required Grunt tasks
+    require('jit-grunt')(grunt);
+
+    // Define the configuration for all the tasks
+    grunt.initConfig({
+        sass: {
+            dist: {
+                files: {
+                    'css/styles.css': 'css/styles.scss'
+                }
+            }
+        }
+    });
+
+    grunt.registerTask('css', ['sass']);
+
+};
+
+in cmd:
+grunt css
+
+
+npm install grunt-contrib-watch@1.0.0 --save-dev
+npm install grunt-browser-sync@2.2.0 --save-dev
+
+
+and then, add this code in after sass braket:
+
+,
+        watch: {
+            files: 'css/*.scss',
+            tasks: ['sass']
+        },
+        browserSync: {
+            dev: {
+                bsFiles: {
+                    src : [
+                        'css/*.css',
+                        '*.html',
+                        'js/*.js'
+                    ]
+                },
+                options: {
+                    watchTask: true,
+                    server: {
+                        baseDir: "./"
+                    }
+                }
+            }
+
+add:
+grunt.registerTask('default', ['browserSync', 'watch']);
+
+in cmd:
+grunt
+
+-----------------------------------------------------------
+npm install grunt-contrib-copy@1.0.0 --save-dev
+npm install grunt-contrib-clean@1.1.0 --save-dev
+
+add:
+        copy: {
+            html: {
+                files: [
+                {
+                    //for html
+                    expand: true,
+                    dot: true,
+                    cwd: './',
+                    src: ['*.html'],
+                    dest: 'dist'
+                }]                
+            },
+            fonts: {
+                files: [
+                {
+                    //for font-awesome
+                    expand: true,
+                    dot: true,
+                    cwd: 'node_modules/font-awesome',
+                    src: ['fonts/*.*'],
+                    dest: 'dist'
+                }]
+            }
+        },
+
+        clean: {
+            build: {
+                src: [ 'dist/']
+            }
+        }
+
+npm install grunt-contrib-imagemin@2.0.1 --save-dev
+
+add:
+ imagemin: {
+            dynamic: {
+                files: [{
+                    expand: true,                  // Enable dynamic expansion
+                    cwd: './',                   // Src matches are relative to this path
+                    src: ['img/*.{png,jpg,gif}'],   // Actual patterns to match
+                    dest: 'dist/'                  // Destination path prefix
+                }]
+            }
+        }
+
+npm install grunt-contrib-concat@1.0.1 --save-dev
+npm install grunt-contrib-cssmin@2.2.1 --save-dev
+npm install grunt-contrib-htmlmin@2.4.0 --save-dev
+npm install grunt-contrib-uglify@3.3.0 --save-dev
+npm install grunt-filerev@2.3.1 --save-dev
+npm install grunt-usemin@3.1.1 --save-dev
+
+add:
+
+useminPrepare: {
+            foo: {
+                dest: 'dist',
+                src: ['contactus.html','aboutus.html','index.html']
+            },
+            options: {
+                flow: {
+                    steps: {
+                        css: ['cssmin'],
+                        js:['uglify']
+                    },
+                    post: {
+                        css: [{
+                            name: 'cssmin',
+                            createConfig: function (context, block) {
+                            var generated = context.options.generated;
+                                generated.options = {
+                                    keepSpecialComments: 0, rebase: false
+                                };
+                            }       
+                        }]
+                    }
+                }
+            }
+        },
+
+        // Concat
+        concat: {
+            options: {
+                separator: ';'
+            },
+  
+            // dist configuration is provided by useminPrepare
+            dist: {}
+        },
+
+        // Uglify
+        uglify: {
+            // dist configuration is provided by useminPrepare
+            dist: {}
+        },
+
+        cssmin: {
+            dist: {}
+        },
+
+        // Filerev
+        filerev: {
+            options: {
+                encoding: 'utf8',
+                algorithm: 'md5',
+                length: 20
+            },
+  
+            release: {
+            // filerev:release hashes(md5) all assets (images, js and css )
+            // in dist directory
+                files: [{
+                    src: [
+                        'dist/js/*.js',
+                        'dist/css/*.css',
+                    ]
+                }]
+            }
+        },
+  
+        // Usemin
+        // Replaces all assets with their revved version in html and css files.
+        // options.assetDirs contains the directories for finding the assets
+        // according to their relative paths
+        usemin: {
+            html: ['dist/contactus.html','dist/aboutus.html','dist/index.html'],
+            options: {
+                assetsDirs: ['dist', 'dist/css','dist/js']
+            }
+        },
+
+        htmlmin: {                                         // Task
+            dist: {                                        // Target
+                options: {                                 // Target options
+                    collapseWhitespace: true
+                },
+                files: {                                   // Dictionary of files
+                    'dist/index.html': 'dist/index.html',  // 'destination': 'source'
+                    'dist/contactus.html': 'dist/contactus.html',
+                    'dist/aboutus.html': 'dist/aboutus.html',
+                }
+            }
+        }
+
+udapte on the top:
+
+require('jit-grunt')(grunt, {
+  useminPrepare: 'grunt-usemin'
+});
+
+add:
+
+ grunt.registerTask('build', [
+        'clean',
+        'copy',
+        'imagemin',
+        'useminPrepare',
+        'concat',
+        'cssmin',
+        'uglify',
+        'filerev',
+        'usemin',
+        'htmlmin'
+    ]);
+
+in cmd:
+grunt build
+
+-----------------------------------------------------------
+
+npm install -g gulp-cli@2.0.1
+
+npm install gulp@3.9.1 --save-dev
+
+npm install gulp-sass@3.1.0  browser-sync@2.23.6 --save-dev
+
+create gulpfile.js
+and add this code:
+
+'use strict';
+
+var gulp = require('gulp'),
+    sass = require('gulp-sass'),
+    browserSync = require('browser-sync');
+ 
+gulp.task('sass', function () {
+  return gulp.src('./css/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
+});
+
+gulp.task('sass:watch', function () {
+  gulp.watch('./css/*.scss', ['sass']);
+});
+
+gulp.task('browser-sync', function () {
+   var files = [
+      './*.html',
+      './css/*.css',
+      './img/*.{png,jpg,gif}',
+      './js/*.js'
+   ];
+
+   browserSync.init(files, {
+      server: {
+         baseDir: "./"
+      }
+   });
+
+});
+
+// Default task
+gulp.task('default', ['browser-sync'], function() {
+    gulp.start('sass:watch');
+});
+
+and type this in cmd:
+gulp
+----------------------------------------------------------
+npm install del@3.0.0 --save-dev
+
+var ...
+    del = require('del'),
+    ...
+
+// Clean
+gulp.task('clean', function() {
+    return del(['dist']);
+});
+
+gulp.task('copyfonts', function() {
+   gulp.src('./node_modules/font-awesome/fonts/**/*.{ttf,woff,eof,svg}*')
+   .pipe(gulp.dest('./dist/fonts'));
+});
+
+npm install gulp-imagemin@4.1.0 --save-dev
+
+var ...
+    imagemin = require('gulp-imagemin'),
+    ...
+
+npm install gulp-uglify@3.0.0 gulp-usemin@0.3.29 gulp-rev@8.1.1 gulp-clean-css@3.9.3 gulp-flatmap@1.0.2 gulp-htmlmin@4.0.0 --save-dev
+
+var ...
+    uglify = require('gulp-uglify'),
+    usemin = require('gulp-usemin'),
+    rev = require('gulp-rev'),
+    cleanCss = require('gulp-clean-css'),
+    flatmap = require('gulp-flatmap'),
+    htmlmin = require('gulp-htmlmin');
+
+gulp.task('usemin', function() {
+  return gulp.src('./*.html')
+  .pipe(flatmap(function(stream, file){
+      return stream
+        .pipe(usemin({
+            css: [ rev() ],
+            html: [ function() { return htmlmin({ collapseWhitespace: true })} ],
+            js: [ uglify(), rev() ],
+            inlinejs: [ uglify() ],
+            inlinecss: [ cleanCss(), 'concat' ]
+        }))
+    }))
+    .pipe(gulp.dest('dist/'));
+});
+
+gulp.task('build',['clean'], function() {
+    gulp.start('copyfonts','imagemin','usemin');
+});
+
+gulp build
