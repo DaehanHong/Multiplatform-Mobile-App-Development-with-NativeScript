@@ -10,3 +10,159 @@ git init
 git status
 git log --oneline
 
+---------------------------------------------------------
+npm install @angular/material@6.4.7 --save
+npm install @angular/cdk@6.4.7 --save
+npm install --save @angular/animations@6.1.7
+npm install --save hammerjs@2.0.8
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+npm install --save @angular/flex-layout@6.0.0-beta.18
+
+. . . 
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatToolbarModule } from '@angular/material/toolbar'; 
+import { FlexLayoutModule } from '@angular/flex-layout';
+
+. . . 
+
+import 'hammerjs';
+
+@NgModule({
+  
+  . . . 
+  
+  imports: [ 
+    
+    . . .,
+    
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    FlexLayoutModule
+    
+  ], 
+    
+    . . . 
+  
+  
+}) 
+
+. . . 
+
+<mat-toolbar color="primary"> <span>Ristorante Con Fusion</span> </mat-toolbar>
+
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+// some basic resets 
+
+body { 
+  padding: 0; 
+  margin: 0; 
+  font-family: Roboto, sans-serif; 
+  
+}
+
+--------------------------------------------------------------
+ng generate component menu
+
+<app-menu></app-menu>
+
+export class Dish {
+    id: string;
+    name: string;
+    image: string;
+    category: string;
+    featured: boolean;
+    label: string;
+    price: string;
+    description: string;
+}
+
+
+
+export class MenuComponent implements OnInit {
+
+  dishes: Dish[] = [
+    {
+      id: '0',
+      name: 'Uthappizza',
+      image: '/assets/images/uthappizza.png',
+      category: 'mains',
+      featured: true,
+      label: 'Hot',
+      price: '4.99',
+      // tslint:disable-next-line:max-line-length
+      description: 'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.'
+    },
+    {
+      id: '1',
+      name: 'Zucchipakoda',
+      image: '/assets/images/zucchipakoda.png',
+      category: 'appetizer',
+      featured: false,
+      label: '',
+      price: '1.99',
+      description: 'Deep fried Zucchini coated with mildly spiced Chickpea flour batter accompanied with a sweet-tangy tamarind sauce'
+    },
+    {
+      id: '2',
+      name: 'Vadonut',
+      image: '/assets/images/vadonut.png',
+      category: 'appetizer',
+      featured: false,
+      label: 'New',
+      price: '1.99',
+      description: 'A quintessential ConFusion experience, is it a vada or is it a donut?'
+    },
+    {
+      id: '3',
+      name: 'ElaiCheese Cake',
+      image: '/assets/images/elaicheesecake.png',
+      category: 'dessert',
+      featured: false,
+      label: '',
+      price: '2.99',
+      description: 'A delectable, semi-sweet New York Style Cheese Cake, with Graham cracker crust and spiced with Indian cardamoms'
+    }
+   ];
+. . .
+}
+
+
+<div class="container"
+     fxLayout="column"
+     fxLayoutGap="10px">
+
+  <mat-list fxFlex>
+    <mat-list-item *ngFor="let dish of dishes">
+      <img matListAvatar src={{dish.image}} alt={{dish.name}}>
+      <h1 matLine> {{dish.name}} </h1>
+      <p matLine>
+        <span> {{dish.description}} </span>
+      </p>
+    </mat-list-item>
+  </mat-list>
+
+</div>
+
+
+. . .
+
+import { MatListModule } from '@angular/material/list';
+
+. . .
+
+  imports: [
+    . . .,
+    MatListModule,
+    . . .
+  ],
+
+
+.container {
+    margin: 20px;
+    display:flex;
+}
+----------------------------------------------------------
