@@ -1,0 +1,12 @@
+npm install -g @angular/cli@6.2.1
+
+ng help
+
+ng new conFusion --style=scss
+
+ng serve --open
+
+git init
+git status
+git log --oneline
+
