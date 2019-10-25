@@ -1,0 +1,15 @@
+ npm install -g nativescript@4.1.2
+
+@powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((new-object net.webclient).DownloadString('https://www.nativescript.org/setup/win'))"
+
+ tns platform add android
+
+ tns doctor
+
+ tns create conFusion --ng
+
+ tns run android
+
+ tns run android --emulator
+
+tns platform add android
