@@ -1,29 +1,33 @@
-import { Injectable } from'@angular/core';
-import { Dish } from '../shared/dish';
-import { Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { baseURL } from '../shared/baseurl';
-import { ProcessHTTPMsgService } from './process-httpmsg.service';
+import { Injectable } from '@angular/core'; 
+import { Dish } from '../shared/dish'; 
+import { Observable } from 'rxjs/Observable'; 
+import { Http, Response } from '@angular/http'; 
+import { baseURL } from '../shared/baseurl'; 
+import { ProcessHTTPMsgService } from './process-httpmsg.service'; 
+import 'rxjs/add/operator/map'; 
+import 'rxjs/add/operator/delay'; 
+import 'rxjs/add/operator/catch';
 
-@Injectable({
-    providedIn: 'root'
-})
-export class DishService{
-    constructor(private http: HttpClient,
+@Injectable() export class DishService {
+
+    constructor(public http: Http, 
         private processHTTPMsgService: ProcessHTTPMsgService) { }
+    
+    getDishes(): Observable<Dish[]> { 
+        return this.http.get(baseURL + 'dishes')
+        .map(res => { return this.processHTTPMsgService.extractData (res); }) 
+        .catch(error => { return this.processHTTPMsgService .handleError(error); }); 
+    }
 
-    getDishes(): Observable<Dish[]> {
-        return this.http.get<Dish[]>(baseURL + 'dishes')
-            .pipe(catchError(this.processHTTPMsgService.handleError));
+    getDish(id: number): Observable<Dish> { 
+        return this.http.get(baseURL + 'dishes/'+ id) 
+        .map(res => { return this.processHTTPMsgService.extractData (res); }) 
+        .catch(error => { return this.processHTTPMsgService .handleError(error); });
     }
-    getDish(id: number): Observable<Dish> {
-        return this.http.get<Dish>(baseURL + 'dishes/' + id)
-            .pipe(catchError(this.processHTTPMsgService.handleError));
-    }
-    getFeaturedDish(): Observable<Dish> {
-        return this.http.get<Dish>(baseURL + 'dishes?featured=true')
-            .pipe(map(dishes => dishes[0]))
-            .pipe(catchError(this.processHTTPMsgService.handleError));
+
+    getFeaturedDish(): Observable<Dish> { 
+        return this.http.get(baseURL + 'dishes?featured=true') 
+        .map(res => { return this.processHTTPMsgService.extractData (res)[0]; }) 
+        .catch(error => { return this.processHTTPMsgService .handleError(error); }); 
     }
 }
