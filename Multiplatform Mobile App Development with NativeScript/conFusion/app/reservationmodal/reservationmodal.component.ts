@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { DatePicker } from 'ui/date-picker';
 import { TimePicker } from 'ui/time-picker';
@@ -9,57 +9,55 @@ import { Page } from 'ui/page';
     moduleId: module.id,
     templateUrl: './reservationmodal.component.html'
 })
+
 export class ReservationModalComponent implements OnInit {
 
-    guestArray=[1, 2, 3, 4, 5, 6];
+    guestArray = [1, 2, 3, 4, 5, 6];
     guests: number;
-    isDateTime: boolean = false;
+    isDateTime: boolean;
+    @ViewChild('datePicker') datePickerElement: ElementRef;
+    @ViewChild('timePicker') timePickerElement: ElementRef;
+    @ViewChild('guestPicker') guestPickerElement: ElementRef;
 
     constructor(private params: ModalDialogParams,
         private page: Page) {
 
-            if(params.context === "guest") {
+            if(params.context === 'guest') {
                 this.isDateTime = false;
-            }
-            else if(params.context === "date-time") {
+            } else if(params.context === 'date-time') {
                 this.isDateTime = true;
             }
-    }
-
+        }
     ngOnInit() {
+        if(this.isDateTime) {
+            let datePicker: DatePicker = <DatePicker>this.datePickerElement.nativeElement;
 
-        if (this.isDateTime) {
-            let datePicker: DatePicker = <DatePicker>this.page.getViewById<DatePicker>('datePicker');
+            console.log(datePicker);
 
-            let currentdate: Date = new Date();
-            datePicker.year = currentdate.getFullYear();
-            datePicker.month = currentdate.getMonth() + 1;
-            datePicker.day = currentdate.getDate();
-            datePicker.minDate = currentdate;
+            let currentDate: Date = new Date();
+            datePicker.year = currentDate.getFullYear();
+            datePicker.month = currentDate.getMonth() + 1;
+            datePicker.day = currentDate.getDate();
+            datePicker.minDate = currentDate;
             datePicker.maxDate = new Date(2045, 4, 12);
 
-            let timePicker: TimePicker = <TimePicker>this.page.getViewById<TimePicker>('timePicker');
-            timePicker.hour = currentdate.getHours();
-            timePicker.minute = currentdate.getMinutes();
+            let timePicker: TimePicker = <TimePicker>this.timePickerElement.nativeElement;
+            timePicker.hour = currentDate.getHours();
+            timePicker.minute = currentDate.getMinutes();
         }
     }
 
     public submit() {
-        if (this.isDateTime) {
-            let datePicker: DatePicker = <DatePicker>this.page.getViewById<DatePicker>('datePicker');
+        if(this.isDateTime) {
+            let datePicker: DatePicker = <DatePicker>this.datePickerElement.nativeElement;
             let selectedDate = datePicker.date;
-            let timePicker: TimePicker = <TimePicker>this.page.getViewById<TimePicker>('timePicker');
+            let timePicker: TimePicker = <TimePicker>this.timePickerElement.nativeElement;
             let selectedTime = timePicker.time;
-            let reserveTime = new Date(selectedDate.getFullYear(),
-                                        selectedDate.getMonth(),
-                                        selectedDate.getDate(),
-                                        selectedTime.getHours(),
-                                        selectedTime.getMinutes());
+            let reserveTime = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDay(), selectedTime.getHours(), selectedTime.getMinutes());
             this.params.closeCallback(reserveTime.toISOString());
-        }
-        else {
-            let picker = <ListPicker> this.page.getViewById<ListPicker>('guestPicker');
-            this.params.closeCallback(this.guestArray[picker.selectedIndex])
+        } else {
+            let picker = <ListPicker>this.guestPickerElement.nativeElement;
+            this.params.closeCallback(this.guestArray[picker.selectedIndex]);
         }
     }
 }

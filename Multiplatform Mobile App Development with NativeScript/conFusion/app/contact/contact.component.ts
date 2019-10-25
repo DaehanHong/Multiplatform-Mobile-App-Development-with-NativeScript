@@ -1,20 +1,39 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import * as app from 'application';
+import { RadSideDrawer } from 'nativescript-ui-sidedrawer';
+import { TNSFontIconService } from 'nativescript-ngx-fonticon';
+import * as Email from 'nativescript-email';
+import * as Phone from 'nativescript-phone';
 
-import { DrawerPage } from '../shared/drawer/drawer.page';
+@Component({
+    selector: 'app-contact',
+    moduleId: module.id,
+    templateUrl: './contact.component.html',
+})
 
-@Component({ 
-    selector: 'app-contact', 
-    moduleId: module.id, 
-    templateUrl: './contact.component.html', 
-    styleUrls: ['./contact.component.css'] 
-}) 
-export class ContactComponent extends DrawerPage implements OnInit {
+export class ContactComponent implements OnInit{
+    constructor(public fonticon: TNSFontIconService) { }
 
-    constructor(private changeDetectorRef:ChangeDetectorRef,
-        @Inject('BaseURL') private BaseURL) { 
-            super(changeDetectorRef); 
+    ngOnInit() { }
+    
+    onDrawerButtonTap(): void {
+        const sideDrawer = <RadSideDrawer>app.getRootView();
+        sideDrawer.showDrawer();
     }
-
-    ngOnInit() { 
+    sendEmail() {
+        Email.available()
+            .then((avail: boolean) => {
+                if(avail) {
+                    Email.compose({
+                        to: ['confusion@food.net'],
+                        subject: '[ConFusion]: Query',
+                        body: 'Dear Sir/Madam:'
+                    });
+                } else
+                    console.log('No Email Configured');
+            });
+    }
+    callRestaurent() {
+        Phone.dial('+852-1234-5678', true);
     }
 }

@@ -1,35 +1,29 @@
-import { Injectable } from '@angular/core'; 
-import { Promotion } from '../shared/promotion'; 
-import { Observable } from 'rxjs/Observable'; 
-import { Http, Response } from '@angular/http'; 
-import { baseURL } from '../shared/baseurl'; 
-import { ProcessHTTPMsgService } from './process-httpmsg.service'; 
-import 'rxjs/add/operator/map'; 
-import 'rxjs/add/operator/delay'; 
-import 'rxjs/add/operator/catch';
+import { Injectable } from'@angular/core';
+import { Promotion } from '../shared/promotion';
+import { Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { baseURL } from '../shared/baseurl';
+import { ProcessHTTPMsgService } from './process-httpmsg.service';
 
-/*  Generated class for the DishProvider provider.  See https://angular.io/docs/ts/latest/guide/dependency-injection.html  for more info on providers and Angular 2 DI. */ 
-@Injectable() 
-export class PromotionService {
-    constructor(public http: Http, 
+@Injectable({
+    providedIn: 'root'
+})
+export class PromotionService{
+    constructor(private http: HttpClient,
         private processHTTPMsgService: ProcessHTTPMsgService) { }
 
-    getPromotions(): Observable<Promotion[]> { 
-        return this.http.get(baseURL + 'promotions') 
-        .map(res => { return this.processHTTPMsgService.extractData (res); }) 
-        .catch(error => { return this.processHTTPMsgService .handleError(error); }); 
+    getPromotions(): Observable<Promotion[]> {
+        return this.http.get<Promotion[]>(baseURL + 'promotions')
+            .pipe(catchError(this.processHTTPMsgService.handleError));
     }
-
-
-    getPromotion(id: number): Observable<Promotion> { 
-        return this.http.get(baseURL + 'promotions/'+ id) 
-        .map(res => { return this.processHTTPMsgService.extractData (res); }) 
-        .catch(error => { return this.processHTTPMsgService .handleError(error); }); 
+    getPromotion(id: number): Observable<Promotion> {
+        return this.http.get<Promotion>(baseURL + 'promotions/' + id)
+            .pipe(catchError(this.processHTTPMsgService.handleError));
     }
-
-    getFeaturedPromotion(): Observable<Promotion> { 
-        return this.http.get(baseURL + 'promotions?featured=true') 
-        .map(res => { return this.processHTTPMsgService.extractData (res)[0]; }) 
-        .catch(error => { return this.processHTTPMsgService .handleError(error); }); 
+    getFeaturedPromotion(): Observable<Promotion> {
+        return this.http.get<Promotion>(baseURL + 'promotions?featured=true')
+            .pipe(map(promotions => promotions[0]))
+            .pipe(catchError(this.processHTTPMsgService.handleError));
     }
 }

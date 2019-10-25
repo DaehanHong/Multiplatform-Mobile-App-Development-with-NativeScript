@@ -1,7 +1,6 @@
-export interface Comment 
-{ 
-    rating: number; 
-    comment: string; 
-    author: string; 
+export interface Comment{
+    rating: number;
+    comment: string;
+    author: string;
     date: string;
 }
